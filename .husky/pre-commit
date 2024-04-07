@@ -1,0 +1,27 @@
+#!/bin/sh
+if [ ! -d "node_modules" ]; then
+  npx
+fi
+
+local_branch_name="$(git rev-parse --abbrev-ref HEAD)"
+
+valid_branch_regex='^((fix|feat|refactor)\/[a-zA-Z0-9\-]+)$'
+
+message="
+BRANCH NAME \"$local_branch_name\" is invalid, your commit will be rejected. 
+
+You should rename your branch to:
+- feat/your-branch-name
+- fix/your-branch-name
+- refactor/your-branch-name
+
+"
+
+if [[ ! $local_branch_name =~ $valid_branch_regex ]]; then
+    echo "$message"
+    exit 1
+fi
+
+npx lint-staged
+
+exit 0
